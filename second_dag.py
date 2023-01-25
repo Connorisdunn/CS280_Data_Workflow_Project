@@ -23,8 +23,8 @@ def third_task_function():
     return
 
 with DAG(
-    dag_id="Favorite basketball player",
-    schedule_interval="0 10 * * *",
+    dag_id="Favorite_basketball_player",
+    schedule_interval="0 5 * * *",
     start_date=pendulum.datetime(2023, 1, 1, tz="US/Pacific"),
     catchup=False,
 ) as dag:
