@@ -18,8 +18,8 @@ def get_twitter_api(ti: TaskInstance, **kwargs):
     tweet_ids = Variable.get("TWITTER_TWEET_IDS", deserialize_json=True)
     my_bearer_token = "AAAAAAAAAAAAAAAAAAAAAGrdlQEAAAAAzVmWY9pqSyvsR0QLUVisknVWiRU%3DHebGz3s9dv8b2uo3oOiaBol3HE0287o3DPpqml0G7BCw9xcVY6"
     header_token = {"Authorization": f"Bearer {my_bearer_token}"}
-    user_requests = [requests.get(f"https://api.twitter.com/2/users/{id}?user.fields=public_metrics,profile_image_url,username,id,description", headers=get_auth_header()) for id in user_ids]
-    tweet_requests = [requests.get(f"https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,text,public_metrics", headers=get_auth_header()) for id in tweet_ids]
+    user_requests = [requests.get(f"https://api.twitter.com/2/users/{id}?user.fields=public_metrics,profile_image_url,username,id,description", headers=header_token).json() for id in user_ids]
+    tweet_requests = [requests.get(f"https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,text,public_metrics", headers=header_token).json() for id in tweet_ids]
     ti.xcom_push("user_requests", user_requests)
     ti.xcom_push("tweet_requests", tweet_requests)
     logging.info(user_requests)
