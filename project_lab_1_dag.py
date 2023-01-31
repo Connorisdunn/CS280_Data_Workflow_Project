@@ -10,7 +10,8 @@ import requests
 import pandas as pd
 
 def get_auth_header():
-    my_bearer_token = Variable.get("TWITTER_BEARER_TOKEN", deserialize_json=True)
+    #my_bearer_token = Variable.get("TWITTER_BEARER_TOKEN", deserialize_json=True)
+    my_bearer_token = "AAAAAAAAAAAAAAAAAAAAAGrdlQEAAAAAzVmWY9pqSyvsR0QLUVisknVWiRU%3DHebGz3s9dv8b2uo3oOiaBol3HE0287o3DPpqml0G7BCw9xcVY6"
     return {"Authorization": f"Bearer {my_bearer_token}"}
 
 def get_twitter_api(ti: TaskInstance, **kwargs):
