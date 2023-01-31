@@ -2,6 +2,9 @@ import requests
 from airflow.models import Variable
 from airflow.models import TaskInstance
 from airflow.operators.python import PythonOperator
+from airflow import DAG
+import logging
+import pendulum
 
 
 #my_value = Variable.get("my_key", deserialize_json=True)
