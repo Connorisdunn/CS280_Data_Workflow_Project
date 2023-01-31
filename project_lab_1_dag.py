@@ -25,6 +25,9 @@ def get_twitter_api(ti: TaskInstance, **kwargs):
 def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
     user_requests = pd.DataFrame(data=ti.xcom_pull(key="user_requests", task_ids="get_twitter_api_data_task"))
     tweet_requests = pd.DataFrame(data=ti.xcom_pull(key="tweet_requests", task_ids="get_twitter_api_data_task"))
+    client = storage.Client()
+    bucket = client.get_bucket("<name of your bucket that you created last lab>")
+    bucket.blob("data/<csv name>.csv").upload_from_string(<dataframe name>.to_csv(index=False), "text/csv")
 
 
 with DAG(
