@@ -1,4 +1,5 @@
 from airflow import DAG
+from google.cloud import storage
 import logging
 import pendulum
 from airflow.operators.python import PythonOperator
