@@ -1,6 +1,7 @@
 import requests
 from airflow.models import Variable
 from airflow.models import TaskInstance
+from airflow.operators.python import PythonOperator
 
 
 #my_value = Variable.get("my_key", deserialize_json=True)
