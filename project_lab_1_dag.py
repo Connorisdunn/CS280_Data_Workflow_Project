@@ -52,6 +52,7 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
     user_matching_data = iterate_json_list(json.loads(users), user_header_list)
     tweet_matching_data = iterate_json_list(json.loads(tweets), tweet_header_list)
     
+
     client = storage.Client()
     bucket = client.get_bucket("c-d-apache-airflow-cs280")
     bucket.blob("data/user_requests.csv").upload_from_string(user_matching_data.to_csv(index=False), "text/csv")
@@ -61,7 +62,7 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
     dbox = Client(user_token)
     
     fs = GCSFileSystem(project="Connor-Dunn-CS-280")
-    with fs.open('gs://c-d-apache-airflow-cs280/data/user_requests.csv', 'r') as f:
+    with fs.open('gs://c-d-apache-airflow-cs280/data/user.csv', 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
         data = [row for row in reader]
@@ -72,7 +73,7 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
                 name_index = header.index('name')
                 if count > 0:
                     dbox.push(f'UserMetric {val[name_index]} {header[idx]}', item)
-    with fs.open('gs://c-d-apache-airflow-cs280/data/tweet_requests.csv', 'r') as f:
+    with fs.open('gs://c-d-apache-airflow-cs280/data/tweet.csv', 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
         data = [row for row in reader]
