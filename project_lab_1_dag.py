@@ -37,16 +37,16 @@ def get_twitter_api(ti: TaskInstance, **kwargs):
     tweet_ids = Variable.get("TWITTER_TWEET_IDS", deserialize_json=True)
     my_bearer_token = Variable.get("TWITTER_BEARER_TOKEN")
     header_token = {"Authorization": f"Bearer {my_bearer_token}"}
-    user_requests = [requests.get(f"https://api.twitter.com/2/users/{id}?user.fields=public_metrics,profile_image_url,username,id,description", headers=header_token).json() for id in user_ids]
-    tweet_requests = [requests.get(f"https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,text,public_metrics", headers=header_token).json() for id in tweet_ids]
-    ti.xcom_push("user_requests", json.dumps(user_requests))
-    ti.xcom_push("tweet_requests", json.dumps(tweet_requests))
-    logging.info(user_requests)
-    logging.info(tweet_requests)
+    user = [requests.get(f"https://api.twitter.com/2/users/{id}?user.fields=public_metrics,profile_image_url,username,id,description", headers=header_token).json() for id in user_ids]
+    tweet = [requests.get(f"https://api.twitter.com/2/tweets/{id}?tweet.fields=author_id,text,public_metrics", headers=header_token).json() for id in tweet_ids]
+    ti.xcom_push("user", json.dumps(user))
+    ti.xcom_push("tweet", json.dumps(tweet))
+    logging.info(user)
+    logging.info(tweet)
 
 def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
-    users = data=ti.xcom_pull(key="user_requests", task_ids="get_twitter_api_data_task")
-    tweets = data=ti.xcom_pull(key="tweet_requests", task_ids="get_twitter_api_data_task")
+    users = data=ti.xcom_pull(key="user", task_ids="get_twitter_api_data_task")
+    tweets = data=ti.xcom_pull(key="tweet", task_ids="get_twitter_api_data_task")
     tweet_header_list = ['retweet_count', 'reply_count', 'like_count', 'quote_count', 'impression_count', 'tweet_id', 'text', 'id']
     user_header_list = ['followers_count','following_count','tweet_count','listed_count','name','username','id']
     user_matching_data = iterate_json_list(json.loads(users), user_header_list)
