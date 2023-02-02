@@ -55,8 +55,8 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
 
     client = storage.Client()
     bucket = client.get_bucket("c-d-apache-airflow-cs280")
-    bucket.blob("data/user_requests.csv").upload_from_string(user_matching_data.to_csv(index=False), "text/csv")
-    bucket.blob("data/tweet_requests.csv").upload_from_string(tweet_matching_data.to_csv(index=False), "text/csv")
+    bucket.blob("data/user.csv").upload_from_string(user_matching_data.to_csv(index=False), "text/csv")
+    bucket.blob("data/tweet.csv").upload_from_string(tweet_matching_data.to_csv(index=False), "text/csv")
 
     user_token = Variable.get("DATABOX_TOKEN")
     dbox = Client(user_token)
