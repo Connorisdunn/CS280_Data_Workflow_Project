@@ -12,26 +12,6 @@ import json
 from databox import Client
 import csv
 
-def flatten_json(data_dict, matching_data, keys_to_match):
-    for key, value in data_dict.items():
-        if type(value) is dict:
-            flatten_json(value, matching_data, keys_to_match)
-        else:
-            if key in keys_to_match:
-                matching_data.append(f"{key}: {value}")
-    return matching_data
-
-def iterate_json_list(data_dict, keys_to_match):
-    match_list = []
-    for dicti in data_dict:
-        matches = []
-        if type(dicti) is dict:
-            flatten_json(dicti, matches, keys_to_match)
-        matches = {x.split(": ")[0]: x.split(": ")[1] for x in matches}
-        matches = dict(sorted(matches.items()))
-        match_list.append(matches)
-    return pd.DataFrame(match_list)
-
 def get_twitter_api(ti: TaskInstance, **kwargs):
     user_ids = Variable.get("TWITTER_USER_IDS", deserialize_json=True)
     tweet_ids = Variable.get("TWITTER_TWEET_IDS", deserialize_json=True)
@@ -51,7 +31,6 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
     user_header_list = ['followers_count','following_count','tweet_count','listed_count','name','username','id']
     user_matching_data = iterate_json_list(json.loads(users), user_header_list)
     tweet_matching_data = iterate_json_list(json.loads(tweets), tweet_header_list)
-    
 
     client = storage.Client()
     bucket = client.get_bucket("c-d-apache-airflow-cs280")
@@ -85,7 +64,26 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
                 if count > 0:
                     dbox.push(f'TweetMetric {val[tweet_index]} {header[idx]}', item)
 
+                    
+def flatten_json(data_dict, matching_data, keys_to_match):
+    for key, value in data_dict.items():
+        if type(value) is dict:
+            flatten_json(value, matching_data, keys_to_match)
+        else:
+            if key in keys_to_match:
+                matching_data.append(f"{key}: {value}")
+    return matching_data
 
+def iterate_json_list(data_dict, keys_to_match):
+    match_list = []
+    for dicti in data_dict:
+        matches = []
+        if type(dicti) is dict:
+            flatten_json(dicti, matches, keys_to_match)
+        matches = {x.split(": ")[0]: x.split(": ")[1] for x in matches}
+        matches = dict(sorted(matches.items()))
+        match_list.append(matches)
+    return pd.DataFrame(match_list)
 
 with DAG(
     dag_id="project_lab_1_etl",
